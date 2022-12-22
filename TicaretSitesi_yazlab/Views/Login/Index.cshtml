@@ -1,0 +1,90 @@
+﻿
+@{
+    ViewData["Title"] = "Login Page";
+}
+
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin</title>
+    <link rel="stylesheet" href="/lib/bootstrap/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/site.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+<body>
+
+
+
+    <div class="container h-100">
+
+
+
+
+        <main class="login-form">
+            <div class="cotainer">
+                <div class="row justify-content-center">
+                    <div class="col-md-8">
+                        <div class="card">
+                            <div class="card-header text-center">Login</div>
+                            <div class="card-body">
+                                <form method="post" action="/Login/Index/">
+                                    <div class="form-group row">
+                                        <label class="col-md-4 col-form-label text-md-right">
+                                            Nick Name
+                                        </label>
+                                        <div class="col-md-6">
+                                            <input type="text" class="form-control" name="AdminName">
+                                            <span></span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-md-4 col-form-label text-md-right">
+                                            Password
+                                        </label>
+                                        <div class="col-md-6">
+                                        <input type="password" class="form-control" name="AdminPassword">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <div class="col-md-6 offset-md-4">
+                                            <div class="checkbox">
+                                                <label>
+                                                    <input type="checkbox" name="remember" data-val="true" data-val-required="The RememberMe field is required." id="RememberMe" value="true"> remember me
+                                                </label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 offset-md-4">
+                                        <button type="submit" value="Login" class="btn btn-success w-100 mt-1 mb-2">Sign In</button>
+                                    </div>
+
+                                </form>
+                                @if (ViewBag.Message != null)
+                                {
+                                <script type="text/javascript">
+                                    window.onload = function () {
+                                        alert("@ViewBag.Message");
+                                    };
+                                </script>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/site.js?v=a62wsath3Sc_FJAh_c9F8J5-TEQRaXnYZsW3waafT0M"></script>
+
+
+</body>
+</html>

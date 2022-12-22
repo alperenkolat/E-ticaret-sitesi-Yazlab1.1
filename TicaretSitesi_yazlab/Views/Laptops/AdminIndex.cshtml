@@ -1,0 +1,529 @@
+﻿@model TicaretSitesi_yazlab.Models.Laptops
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<style>
+    a:link {
+        text-decoration: none;
+    }
+
+    a:hover {
+        text-decoration: none;
+    }
+
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+        padding: 0 2px;
+    }
+
+    ::selection {
+        color: #fff;
+        background: #664AFF;
+    }
+
+    .containerr {
+        position: absolute;
+        left: 200px;
+        top: 20px;
+        max-width: 450px;
+        margin: 50px auto;
+    }
+
+    .container {
+        margin-right: 10px;
+        margin-left:10px;
+        max-width: 1800px;
+    }
+
+        .containerr .searchInput {
+            background: #fff;
+            width: 90%;
+            border-radius: 5px;
+            box-shadow: 0px 1px 5px 3px rgba(0,0,0,0.12);
+        }
+
+    .searchInput input {
+        height: 55px;
+        width: 90%;
+        outline: none;
+        border: none;
+        border-radius: 5px;
+        padding: 0 60px 0 20px;
+        font-size: 18px;
+        box-shadow: 0px 1px 5px rgba(0,0,0,0.1);
+    }
+
+    .searchInput.active input {
+        border-radius: 5px 5px 0 0;
+    }
+
+    .searchInput .resultBox {
+        padding: 0;
+        opacity: 0;
+        pointer-events: none;
+        max-height: 280px;
+        overflow-y: auto;
+    }
+
+    .searchInput.active .resultBox {
+        padding: 10px 8px;
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .resultBox li {
+        list-style: none;
+        padding: 8px 12px;
+        display: none;
+        width: 100%;
+        cursor: default;
+        border-radius: 3px;
+    }
+
+    .searchInput.active .resultBox li {
+        display: block;
+    }
+
+    .resultBox li:hover {
+        background: #efefef;
+    }
+/*
+    .searchInput .icon {
+        position: absolute;
+        right: 0px;
+        top: 0px;
+        height: 55px;
+        width: 55px;
+        text-align: center;
+        line-height: 55px;
+        font-size: 20px;
+        color: #644bff;
+        cursor: pointer;
+    }*/
+</style>
+
+<h1>Laptoplar</h1>
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<div class="container">
+    <div class="searchInput">
+                     @using (Html.BeginForm("AdminIndex", "Laptops", FormMethod.Get)){
+       <button type="submit" class="btn btn-success"  name="bttn" >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+            </svg> Ara
+            </button>
+
+            <input type="text" name="searchString" placeholder="Ürün veya model ara...">
+     
+        <div class="resultBox">
+            <script>
+                const uri = 'Search';
+                let suggestionsa = [];
+                window.returnArrayAsync = () => {
+                    DotNet.invokeMethodAsync('Laptops', 'Search')
+                        .then(data => {
+                            console.log(data);
+                        });
+                };
+                console.log(suggestionsa);
+                let suggestions = [
+                    "Acer",
+                    "Apple",
+                    "Asus",
+                    "Casper",
+                    "Dell",
+                    "Fujitsu",
+                    "Game Garj",
+                    "Hometech",
+                    "Honor",
+                    "HP",
+                    "Huawei",
+                    "I - Life",
+                    "Lenovo",
+                    "Microsoft",
+                    "Monster",
+                    "Msi",
+                    "Hepsiburada",
+                    "Amazon",
+                    "N11",
+                    "Trendyol",
+                        "Inspiron",
+                        "IdeaPad", 
+                        "Alfa",
+                        "Vostro",
+                        "Abra",
+                        "ThinkBook",
+                        "Rog Strix",
+                        "MagicBook",    
+                        "Katana", 
+                        "Yoga", 
+                        "IP Gaming 3",
+                        "ThinkPad",
+                        "Slayer",
+                        "Slayer2",
+                        "MateBook",
+                        "Laptop",
+                       "Semruk",
+                        "Vector",
+                        "Legion",
+                        "Huma",
+                        "Precision",
+                        "MacBook Air",
+
+                    
+                ];
+
+                // getting all required elements
+                const searchInput = document.querySelector(".searchInput");
+                const input = searchInput.querySelector("input");
+                const resultBox = searchInput.querySelector(".resultBox");
+                const icon = searchInput.querySelector(".icon");
+                let linkTag = searchInput.querySelector("a");
+                let webLink;
+
+                // if user press any key and release
+                input.onkeyup = (e) => {
+                    let userData = e.target.value; //user enetered data
+                    let emptyArray = [];
+                    if (userData) {
+                        emptyArray = suggestions.filter((data) => {
+                            //filtering array value and user characters to lowercase and return only those words which are start with user enetered chars
+                            return data.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase());
+                        });
+                        emptyArray = emptyArray.map((data) => {
+                            // passing return data inside li tag
+                            return data = '<li>' + data + '</li>';
+                        });
+                        searchInput.classList.add("active"); //show autocomplete box
+                        showSuggestions(emptyArray);
+                        let allList = resultBox.querySelectorAll("li");
+                        for (let i = 0; i < allList.length; i++) {
+                            //adding onclick attribute in all li tag
+                            allList[i].setAttribute("onclick", "select(this)");
+                        }
+                    } else {
+                        searchInput.classList.remove("active"); //hide autocomplete box
+                    }
+                }
+
+                function showSuggestions(list) {
+                    let listData;
+                    if (!list.length) {
+                        userValue = inputBox.value;
+                        listData = '<li>' + userValue + '</li>';
+                    } else {
+                        listData = list.join('');
+                    }
+                    resultBox.innerHTML = listData;
+                }
+
+            </script>
+        </div>
+        }
+    </div>
+</div>
+<div class="container">
+    <div class="row">
+        <div class="col-2">
+              @using (Html.BeginForm("AdminIndex", "Laptops", FormMethod.Get))
+                    {
+                        <input type="submit" class="btn btn-secondary" value="Filtrele" name="bttn" />
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Markalar</h5>
+                    @foreach (var item in Model.filtrerlaptopslist.DistinctBy(x => x.Brand).OrderBy(x => x.Brand))
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="@item.Brand" name="checkBrand" id="defaultCheck1">
+                            <label class="form-check-label" for="defaultCheck1">
+                                @Html.DisplayFor(modelItem => item.Brand)
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+            <div class="card" style="width: 18rem;">
+
+                <div class="card-body">
+                    <h5 class="card-title">Bellek</h5>
+                        @foreach (var item in Model.filtrerlaptopslist.DistinctBy(x => x.Ram).OrderBy(x => x.Ram))
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="@item.Ram" name="checkRam" id="defaultCheck2">
+                            <label class="form-check-label" for="defaultCheck1">
+                                @Html.DisplayFor(modelItem => item.Ram)
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+
+
+            <div class="card" style="width: 18rem;">
+
+                <div class="card-body">
+                    <h5 class="card-title">EkranBoyutu</h5>
+                    @foreach (var item in Model.filtrerlaptopslist.DistinctBy(x => x.ScreenSize).OrderBy(x => x.ScreenSize))
+                    {
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="@item.ScreenSize" name="checkScreen" id="defaultCheck3">
+                            <label class="form-check-label" for="defaultCheck1">
+                                @Html.DisplayFor(modelItem => item.ScreenSize)
+                            </label>
+                        </div>
+                    }
+                </div>
+            </div>
+                <div class="card" style="width: 18rem;">
+
+                    <div class="card-body">
+                        <h5 class="card-title">İşlemci </h5>
+                        @foreach (var item in Model.filtrerlaptopslist.DistinctBy(x => x.OperatingType).OrderBy(x => x.OperatingType))
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="@item.OperatingType" name="checkGeneration" id="defaultCheck4">
+                                <label class="form-check-label" for="defaultCheck1">
+                                    @Html.DisplayFor(modelItem => item.OperatingType)
+                                </label>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+            <div class="card" style="width: 18rem;">
+
+                <div class="card-body">
+                    <h5 class="card-title">İşletim Sistemi</h5>
+
+                        @foreach (var item in Model.filtrerlaptopslist.DistinctBy(x => x.OperatingSystem).OrderBy(x => x.OperatingSystem))
+                        {
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="@item.OperatingSystem" name="checkOperatingSystem" id="defaultCheck5">
+                                <label class="form-check-label" for="defaultCheck1">
+                                    @Html.DisplayFor(modelItem => item.OperatingSystem)
+                                </label>
+                            </div>
+
+                        }
+                </div>
+            </div>
+
+            
+            <div class="card" style="width: 18rem;">
+
+                <div class="card-body">
+                    <h5 class="card-title">Ürün Puanı</h5>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="5" id="defaultCheck1" name="checkScore">
+                        <label class="form-check-label" for="defaultCheck1">
+                           5 puan
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="4" id="defaultCheck1" name="checkScore">
+                        <label class="form-check-label" for="defaultCheck1">
+                                4 ve üzeri puan
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="3" id="defaultCheck1" name="checkScore">
+                        <label class="form-check-label" for="defaultCheck1">
+                                3 ve üzeri puan
+                        </label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="2" id="defaultCheck1" name="checkScore">
+                        <label class="form-check-label" for="defaultCheck1">
+                                2 ve üzeri puan
+                        </label>
+                    </div>
+                    <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="1" id="defaultCheck1" name="checkScore">
+                        <label class="form-check-label" for="defaultCheck1">
+                                1 ve üzeri puan
+                        </label>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+        <div class="col-10">
+            @using (Html.BeginForm("AdminIndex", "Laptops", FormMethod.Get))
+              {
+                  <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                    <div class="btn-group mr-2" role="group" aria-label="First group">
+                        <input type="submit" class="btn btn-secondary" value="En Düşük Fiyat" name="bttn" >
+                    </div>
+                    <div class="btn-group mr-2" role="group" aria-label="Second group">
+                            <input type="submit" class="btn btn-secondary" value="En Yüksek Fiyat" name="bttn">
+                    </div>
+                        <div class="btn-group mr-2" role="group" aria-label="Second group">
+                            <input type="submit" class="btn btn-secondary" value="En Yüksek Puan" name="bttn">
+                        </div>
+           
+                </div>
+            }
+            <div class="container">
+                <div class="row">
+                    @foreach (var item in Model.partialLaptopslist)
+                    {
+                        <div class="col-3">
+                            <div class="card ">
+                                <a asp-action="Details" asp-route-id="@item.Id">
+                                    <div class="card-body">
+
+
+                                        <img src="@Html.DisplayFor(modelItem => item.Photo)" class="card-img-top" alt="...">
+                                    </div>
+
+                                    <div class="card-body">
+                                        
+
+                                        <h5 class="card-title text-black ">@Html.DisplayFor(modelItem => item.Brand)</h5>
+                                        <h6 class="card-subtitle text-black ">@Html.DisplayFor(modelItem => item.ModelName)</h6>
+
+
+                                        <p class="text-black text-end" >Ürün Puanı @Html.DisplayFor(modelItem => item.Score)</p>
+
+                                        <p class="text-black text-end" style="display: none;">@Html.DisplayFor(modelItem => item.Brand)*@Html.DisplayFor(modelItem => item.ModelName)*@Html.DisplayFor(modelItem => item.OperatingSystem)*@Html.DisplayFor(modelItem => item.OperatingType)*@Html.DisplayFor(modelItem => item.OperatingGeneration)*@Html.DisplayFor(modelItem => item.Ram)*@Html.DisplayFor(modelItem => item.DiskSize)*@Html.DisplayFor(modelItem => item.ScreenSize)*@Html.DisplayFor(modelItem => item.Score)*@Html.DisplayFor(modelItem => item.Price)*@Html.DisplayFor(modelItem => item.Photo)*@Html.DisplayFor(modelItem => item.Id)</p>
+
+                                    </div>
+                                </a>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col">
+                                            <button type="button" class="btn  btn-outline-warning"> Sepete Ekle</button>
+                                        </div>    
+
+                                                                    <div class="col">
+                                    <p class="text-black fs-5">@Html.DisplayFor(modelItem => item.Price) ₺</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    }
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+ 
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.partialLaptopslist[0].Brand)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.partialLaptopslist[0].ModelName)
+            </th>
+            <th>
+                    @Html.DisplayNameFor(model => model.partialLaptopslist[0].ModelNo)
+            </th>
+            <th>
+                    @Html.DisplayNameFor(model => model.partialLaptopslist[0].OperatingSystem)
+            </th>
+            <th>
+                    @Html.DisplayNameFor(model => model.partialLaptopslist[0].OperatingType)
+            </th>
+            <th>
+                    @Html.DisplayNameFor(model => model.partialLaptopslist[0].OperatingGeneration)
+            </th>
+            <th>
+                    @Html.DisplayNameFor(model => model.partialLaptopslist[0].Ram)
+            </th>
+            <th>
+                    @Html.DisplayNameFor(model => model.partialLaptopslist[0].DiskSize)
+            </th>
+       
+            <th>
+                @Html.DisplayNameFor(model => model.partialLaptopslist[0].ScreenSize)
+            </th>
+            <th>
+                    @Html.DisplayNameFor(model => model.partialLaptopslist[0].Score)
+            </th>
+            <th>
+                    @Html.DisplayNameFor(model => model.partialLaptopslist[0].Price)
+            </th>
+            <th>
+                    @Html.DisplayNameFor(model => model.partialLaptopslist[0].WebName)
+            </th>
+            <th>
+                    @Html.DisplayNameFor(model => model.partialLaptopslist[0].Weblink)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.partialLaptopslist) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Brand)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ModelName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ModelNo)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OperatingSystem)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OperatingType)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.OperatingGeneration)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Ram)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DiskSize)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.ScreenSize)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Score)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.WebName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Weblink)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
